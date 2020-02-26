@@ -20,9 +20,7 @@ router.post('/buy', async (req, res, next) => {
     const user = await User.findOne({
       where: {id: req.user.id}
     })
-    console.log('>>>>>>request body:', req.body)
-    const totalPurchase = req.body.latestPrice * req.body.quantity
-
+    const totalPurchase = +req.body.latestPrice * +req.body.quantity
     //check to see if the user has enough balance to make purchase:
     if (totalPurchase > +user.cash) {
       res.status(400).send('Not enough cash!')
@@ -30,16 +28,29 @@ router.post('/buy', async (req, res, next) => {
       await user.update({
         cash: +user.cash - totalPurchase
       })
-
-      const purchase = await Portfolio.create({
-        userId: req.user.id,
-        symbol: req.body.symbol,
-        name: req.body.companyName,
-        quantity: req.body.quantity,
-        price: req.body.latestPrice,
-        totalPrice: totalPurchase
+      const purchaseExists = await Portfolio.findOne({
+        where: {symbol: req.body.symbol}
       })
-      res.send(purchase)
+      if (!purchaseExists) {
+        const purchase = await Portfolio.create({
+          userId: req.user.id,
+          symbol: req.body.symbol,
+          name: req.body.companyName,
+          quantity: +req.body.quantity,
+          price: +req.body.latestPrice,
+          totalPrice: totalPurchase
+        })
+
+        res.send(purchase)
+      } else {
+        await purchaseExists.update({
+          quantity: +purchaseExists.quantity + +req.body.quantity,
+          price: +req.body.latestPrice,
+          totalPrice: +purchaseExists.totalPrice + totalPurchase
+        })
+
+        res.send(purchaseExists)
+      }
     }
   } catch (error) {
     next(error)

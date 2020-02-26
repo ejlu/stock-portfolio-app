@@ -31,13 +31,28 @@ form div {
   flex-direction: column;
   flex-basis: 100%;
   flex: 1;
-  align-items: center;
 }
 
 .left {
+  align-items: center;
   background-color: beige;
 }
 
 .right {
+  align-items: center;
   background-color: lightgray;
+}
+
+.allStocks {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+.singleStock {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
 }

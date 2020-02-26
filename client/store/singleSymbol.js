@@ -19,7 +19,6 @@ const gotSymbolData = symbolData => ({
 export const getSymbolData = symbol => async dispatch => {
   try {
     const {data} = await axios.get(`/api/symbols/${symbol.toUpperCase()}`)
-    console.log('>>>getting symbol data...', data)
     dispatch(gotSymbolData(data))
   } catch (error) {
     console.error(error)

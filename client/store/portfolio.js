@@ -38,11 +38,6 @@ export const buyStock = (
   quantity
 ) => async dispatch => {
   try {
-    console.log('>>>buying...')
-    console.log('>>>symbol:', symbol)
-    console.log('>>>companyName:', companyName)
-    console.log('>>>latestPrice:', latestPrice)
-    console.log('>>>quantity:', quantity)
     const stock = {
       symbol,
       companyName,
@@ -50,7 +45,6 @@ export const buyStock = (
       quantity
     }
     const {data} = await axios.post('/api/portfolio/buy', stock)
-    console.log('>>>buying stock...', data)
     dispatch(boughtStock(data))
   } catch (error) {
     console.error(error)
@@ -64,8 +58,20 @@ export default function(state = portfolio, action) {
     case GET_PORTFOLIO:
       return action.portfolio
     case BUY_STOCK: {
-      console.log('>>>in reducer, buy:', action.stock)
-      return [...state, action.stock]
+      let newEntry = action.stock
+      const existingIndex = state.findIndex(
+        stock => stock.symbol === action.stock.symbol
+      )
+      if (existingIndex !== -1) {
+        let existingStock = state[existingIndex]
+        existingStock.quantity = +action.stock.quantity
+        existingStock.price = +action.stock.price
+        existingStock.totalPrice = +action.stock.totalPrice
+
+        return [...state]
+      } else {
+        return [...state, newEntry]
+      }
     }
     default:
       return state

@@ -1,6 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {getPortfolio, getSymbols, getSymbolData, buyStock} from '../store'
+import {
+  getPortfolio,
+  getSymbols,
+  getSymbolData,
+  buyStock,
+  getCash
+} from '../store'
 //import Buyform from './buy-form'
 
 class Portfolio extends React.Component {
@@ -12,11 +18,13 @@ class Portfolio extends React.Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.getPortVal = this.getPortVal.bind(this)
   }
 
   async componentDidMount() {
     await this.props.getPortfolio()
     await this.props.getSymbols()
+    await this.props.getCash()
   }
 
   handleChange(event) {
@@ -25,29 +33,64 @@ class Portfolio extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault()
+    const enteredStock = event.target.ticker.value
+    const enteredQty = event.target.quantity.value
 
-    const enteredStock = this.state.ticker
-    await this.props.getSymbolData(enteredStock)
+    const cash = +this.props.cash
+    if (!this.props.symbols.includes(enteredStock.toUpperCase())) {
+      alert('No such stock! Try again.')
+    } else if (event.target.quantity.value === '') {
+      alert('Must enter a quantity! Try again.')
+    } else {
+      await this.props.getSymbolData(enteredStock)
+      const symbolData = this.props.symbolData
 
-    const symbolData = this.props.symbolData
-    const symbol = symbolData.symbol
-    const name = symbolData.companyName
-    const price = symbolData.latestPrice
-    const quantity = +this.state.quantity
+      const symbol = symbolData.symbol
+      const name = symbolData.companyName
+      const price = symbolData.latestPrice
+      const quantity = +enteredQty
 
-    await this.props.buyStock(symbol, name, price, quantity)
+      if (price * quantity > cash) {
+        alert(`Not enough cash! You have $${cash} remaining`)
+      } else {
+        await this.props.buyStock(symbol, name, price, quantity)
+        await this.props.getCash()
+        this.setState({
+          ticker: '',
+          quantity: ''
+        })
+      }
+    }
+  }
+
+  getPortVal() {
+    return this.props.portfolio.reduce((accumulator, stock) => {
+      return accumulator + +stock.totalPrice
+    }, 0)
   }
 
   render() {
     return (
       <div className="row">
         <div className="column left">
-          <h4>Portfolio</h4>
-          {this.props.portfolio.map(stock => (
-            <div key={stock.symbol}>{stock.symbol}</div>
-          ))}
+          <div>
+            <h4>{`Portfolio ($${(this.getPortVal() * 100 / 100).toFixed(
+              2
+            )})`}</h4>
+          </div>
+          <div className="allStocks">
+            {this.props.portfolio.map(stock => (
+              <div className="singleStock" key={stock.symbol}>
+                <div>{`${stock.symbol} - ${stock.quantity} shares`}</div>
+                <div>{`$${(+stock.totalPrice * 100 / 100).toFixed(2)}`}</div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="column right">
+          <div>
+            <h4>Cash - {`$${(+this.props.cash * 100 / 100).toFixed(2)}`}</h4>
+          </div>
           <div>
             <form onSubmit={this.handleSubmit}>
               <div>
@@ -80,9 +123,11 @@ class Portfolio extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.user,
   portfolio: state.portfolio,
   symbols: state.allSymbols,
-  symbolData: state.singleSymbol
+  symbolData: state.singleSymbol,
+  cash: state.cash
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -90,7 +135,8 @@ const mapDispatchToProps = dispatch => ({
   getSymbols: () => dispatch(getSymbols()),
   buyStock: (symbol, companyName, price, quantity) =>
     dispatch(buyStock(symbol, companyName, price, quantity)),
-  getSymbolData: symbol => dispatch(getSymbolData(symbol))
+  getSymbolData: symbol => dispatch(getSymbolData(symbol)),
+  getCash: () => dispatch(getCash())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Portfolio)

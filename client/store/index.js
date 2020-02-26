@@ -6,8 +6,15 @@ import user from './user'
 import portfolio from './portfolio'
 import allSymbols from './allSymbols'
 import singleSymbol from './singleSymbol'
+import cash from './cash'
 
-const reducer = combineReducers({user, portfolio, allSymbols, singleSymbol})
+const reducer = combineReducers({
+  user,
+  portfolio,
+  allSymbols,
+  singleSymbol,
+  cash
+})
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 )
@@ -18,3 +25,4 @@ export * from './user'
 export * from './portfolio'
 export * from './allSymbols'
 export * from './singleSymbol'
+export * from './cash'
