@@ -45,6 +45,7 @@ export const buyStock = (
       quantity
     }
     const {data} = await axios.post('/api/portfolio/buy', stock)
+    await axios.post('/api/transactions/buy', stock)
     dispatch(boughtStock(data))
   } catch (error) {
     console.error(error)
@@ -62,12 +63,13 @@ export default function(state = portfolio, action) {
       const existingIndex = state.findIndex(
         stock => stock.symbol === action.stock.symbol
       )
+      console.log('>>>prev state:', state)
       if (existingIndex !== -1) {
         let existingStock = state[existingIndex]
         existingStock.quantity = +action.stock.quantity
         existingStock.price = +action.stock.price
         existingStock.totalPrice = +action.stock.totalPrice
-
+        console.log('>>>new state:', state)
         return [...state]
       } else {
         return [...state, newEntry]

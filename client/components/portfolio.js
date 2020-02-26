@@ -5,7 +5,8 @@ import {
   getSymbols,
   getSymbolData,
   buyStock,
-  getCash
+  getCash,
+  buyStockTransact
 } from '../store'
 //import Buyform from './buy-form'
 
@@ -54,6 +55,7 @@ class Portfolio extends React.Component {
         alert(`Not enough cash! You have $${cash} remaining`)
       } else {
         await this.props.buyStock(symbol, name, price, quantity)
+        // await this.props.buyStockTransact(symbol, name, price, quantity)
         await this.props.getCash()
         this.setState({
           ticker: '',
@@ -136,7 +138,9 @@ const mapDispatchToProps = dispatch => ({
   buyStock: (symbol, companyName, price, quantity) =>
     dispatch(buyStock(symbol, companyName, price, quantity)),
   getSymbolData: symbol => dispatch(getSymbolData(symbol)),
-  getCash: () => dispatch(getCash())
+  getCash: () => dispatch(getCash()),
+  buyStockTransact: (symbol, companyName, price, quantity) =>
+    dispatch(buyStockTransact(symbol, companyName, price, quantity))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Portfolio)

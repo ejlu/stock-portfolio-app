@@ -7,8 +7,7 @@ const User = db.define('user', {
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
-      notEmpty: true,
-      isAlpha: true
+      notEmpty: true
     }
   },
   email: {
