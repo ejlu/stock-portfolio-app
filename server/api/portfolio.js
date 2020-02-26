@@ -43,11 +43,14 @@ router.post('/buy', async (req, res, next) => {
 
         res.send(purchase)
       } else {
-        await purchaseExists.update({
-          quantity: +purchaseExists.quantity + +req.body.quantity,
-          price: +req.body.latestPrice,
-          totalPrice: +purchaseExists.totalPrice + totalPurchase
-        })
+        await purchaseExists.update(
+          {
+            quantity: +purchaseExists.quantity + +req.body.quantity,
+            price: +req.body.latestPrice,
+            totalPrice: +purchaseExists.totalPrice + totalPurchase
+          },
+          {where: {userId: req.user.id}}
+        )
 
         res.send(purchaseExists)
       }

@@ -63,13 +63,11 @@ export default function(state = portfolio, action) {
       const existingIndex = state.findIndex(
         stock => stock.symbol === action.stock.symbol
       )
-      console.log('>>>prev state:', state)
       if (existingIndex !== -1) {
         let existingStock = state[existingIndex]
         existingStock.quantity = +action.stock.quantity
         existingStock.price = +action.stock.price
         existingStock.totalPrice = +action.stock.totalPrice
-        console.log('>>>new state:', state)
         return [...state]
       } else {
         return [...state, newEntry]
