@@ -2,7 +2,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
-
 /**
  * COMPONENT
  */
@@ -11,12 +10,42 @@ const AuthForm = props => {
 
   return (
     <div>
+      {/* <Form>
+        {name === 'signup' && (
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" placeholder="Eric Example" />
+          </Form.Group>
+        )}
+        <Form.Group controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control type="email" placeholder="example@123.com" />
+        </Form.Group>
+
+        <Form.Group controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="password" />
+        </Form.Group>
+        <Button variant="primary" type="submit" onSubmit={handleSubmit}>
+          {displayName}
+        </Button>
+      </Form> */}
       <form onSubmit={handleSubmit} name={name}>
         <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
+          {name === 'signup' && (
+            <div>
+              <label htmlFor="name">
+                <small>Name</small>
+              </label>
+              <input name="name" type="text" />
+            </div>
+          )}
+          <div>
+            <label htmlFor="email">
+              <small>Email</small>
+            </label>
+            <input name="email" type="text" />
+          </div>
         </div>
         <div>
           <label htmlFor="password">
