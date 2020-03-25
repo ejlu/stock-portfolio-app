@@ -67,6 +67,7 @@ class Portfolio extends React.Component {
 
     await this.props.getPortfolio()
     await this.props.getCash()
+    console.log(this.props.portfolio)
   }
 
   getPortVal() {
@@ -85,13 +86,24 @@ class Portfolio extends React.Component {
             )})`}</h4>
           </div>
 
-          <div className="allStocks">
-            {this.props.portfolio.map(stock => (
-              <div className="singleStock" key={stock.symbol}>
-                <div>{`${stock.symbol} - ${stock.quantity} shares`}</div>
-                <div>{`$${(+stock.totalPrice * 100 / 100).toFixed(2)}`}</div>
-              </div>
-            ))}
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Ticker</td>
+                  <td>Shares</td>
+                  <td>Value</td>
+                </tr>
+
+                {this.props.portfolio.map(stock => (
+                  <tr key={stock.id}>
+                    <td>{`${stock.symbol}`}</td>
+                    <td>{`${stock.quantity}`}</td>
+                    <td>{`$${(+stock.totalPrice * 100 / 100).toFixed(2)}`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 

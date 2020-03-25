@@ -29,7 +29,7 @@ router.post('/buy', async (req, res, next) => {
         cash: +user.cash - totalPurchase
       })
       const purchaseExists = await Portfolio.findOne({
-        where: {symbol: req.body.symbol}
+        where: {symbol: req.body.symbol, userId: req.user.id}
       })
       if (!purchaseExists) {
         const purchase = await Portfolio.create({
