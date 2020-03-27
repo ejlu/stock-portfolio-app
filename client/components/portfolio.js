@@ -95,8 +95,8 @@ class Portfolio extends React.Component {
                   <td>Value</td>
                 </tr>
 
-                {this.props.portfolio.map(stock => (
-                  <tr key={stock.id}>
+                {this.props.portfolio.map((stock, index) => (
+                  <tr key={index}>
                     <td>{`${stock.symbol}`}</td>
                     <td>{`${stock.quantity}`}</td>
                     <td>{`$${(+stock.totalPrice * 100 / 100).toFixed(2)}`}</td>
