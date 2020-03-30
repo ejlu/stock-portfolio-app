@@ -64,6 +64,10 @@ form div {
   margin-right: 20px;
   display: flex;
   flex-direction: column;
+  border-radius: 5px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+  margin-top: 10px;
+  padding: 20px;
 }
 
 .right {
@@ -73,7 +77,7 @@ form div {
   align-items: center;
   background-color: lightgray; */
   border-radius: 5px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.9);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
   margin-top: 10px;
   margin-left: 20px;
   display: flex;
@@ -81,6 +85,11 @@ form div {
   align-items: center;
   padding: 20px;
   position: sticky;
+}
+
+hr.break {
+  border-top: 1px solid black;
+  width: 100%;
 }
 
 .allStocks {
