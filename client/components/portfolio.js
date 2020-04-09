@@ -8,6 +8,7 @@ import {
   getCash,
   buyStockTransact
 } from '../store'
+import Time from './time'
 //import Buyform from './buy-form'
 
 class Portfolio extends React.Component {
@@ -111,6 +112,8 @@ class Portfolio extends React.Component {
           <div>
             <h4>Cash - {`$${(+this.props.cash * 100 / 100).toFixed(2)}`}</h4>
           </div>
+          <Time />
+
           <hr className="break" />
           <div>
             <form onSubmit={this.handleSubmit}>

@@ -12,6 +12,10 @@ label {
   display: block;
 }
 
+.marketClosed {
+  color: red;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
