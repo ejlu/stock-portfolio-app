@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:symbol', async (req, res, next) => {
   try {
     const ticker = req.params.symbol.toUpperCase()
-    const singleTickerUrl = `${baseUrl}/stock/market/batch/?symbols=${ticker}&types=quote&filter=symbol,companyName,latestPrice&token=${iexToken}`
+    const singleTickerUrl = `${baseUrl}/stock/market/batch/?symbols=${ticker}&types=quote&filter=symbol,companyName,latestPrice,open,isUSMarketOpen&token=${iexToken}`
     const {data} = await axios.get(singleTickerUrl)
     const quote = data[req.params.symbol.toUpperCase()].quote
     res.json(quote)

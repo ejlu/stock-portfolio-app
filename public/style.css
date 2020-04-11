@@ -120,3 +120,17 @@ td {
   border: 1px solid black;
   width: 100%;
 }
+
+.aboveOpen {
+  color: green;
+}
+
+.equalOpen {
+  display: flex;
+  justify-content: center;
+  color: grey;
+}
+
+.belowOpen {
+  color: red;
+}

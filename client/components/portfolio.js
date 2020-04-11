@@ -8,7 +8,6 @@ import {
   getCash,
   buyStockTransact
 } from '../store'
-import Time from './time'
 //import Buyform from './buy-form'
 
 class Portfolio extends React.Component {
@@ -16,7 +15,8 @@ class Portfolio extends React.Component {
     super()
     this.state = {
       ticker: '',
-      quantity: ''
+      quantity: '',
+      marketOpen: false
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -27,6 +27,25 @@ class Portfolio extends React.Component {
     await this.props.getPortfolio()
     await this.props.getSymbols()
     await this.props.getCash()
+
+    for (let stock of this.props.portfolio) {
+      await this.props.getSymbolData(stock.symbol)
+      const symbolData = this.props.symbolData
+      const latestPrice = +symbolData.latestPrice
+      const openPrice = +symbolData.open
+      if (!openPrice) {
+        stock.perf = 0
+      } else {
+        stock.perf = latestPrice - openPrice
+      }
+    }
+
+    // await this.props.portfolio.forEach(stock => {
+    //   this.props.getSymbolData(stock.symbol)
+    //   console.log('symbolData:', this.props.symbolData)
+    //   const openPrice = +this.props.symbolData.open
+    //   stock.openPrice = openPrice
+    // })
   }
 
   handleChange(event) {
@@ -52,7 +71,12 @@ class Portfolio extends React.Component {
       const symbol = symbolData.symbol
       const name = symbolData.companyName
       const price = +symbolData.latestPrice
+      const isMarketOpen = symbolData.isUSMarketOpen
       const quantity = +enteredQty
+
+      this.setState({
+        marketOpen: isMarketOpen
+      })
 
       if (price * quantity > +cash) {
         alert(`Not enough cash! You have $${cash} remaining`)
@@ -68,7 +92,6 @@ class Portfolio extends React.Component {
 
     await this.props.getPortfolio()
     await this.props.getCash()
-    console.log(this.props.portfolio)
   }
 
   getPortVal() {
@@ -94,6 +117,7 @@ class Portfolio extends React.Component {
                   <td>Ticker</td>
                   <td>Shares</td>
                   <td>Value</td>
+                  <td>vs Open Price</td>
                 </tr>
 
                 {this.props.portfolio.map((stock, index) => (
@@ -101,6 +125,21 @@ class Portfolio extends React.Component {
                     <td>{`${stock.symbol}`}</td>
                     <td>{`${stock.quantity}`}</td>
                     <td>{`$${(+stock.totalPrice * 100 / 100).toFixed(2)}`}</td>
+                    {stock.perf ? (
+                      stock.perf < 0 ? (
+                        <td className="belowOpen">
+                          {`-$${(+Math.abs(stock.perf) * 100 / 100).toFixed(
+                            2
+                          )}`}
+                        </td>
+                      ) : (
+                        <td className="aboveOpen">
+                          {`$${(+stock.perf * 100 / 100).toFixed(2)}`}
+                        </td>
+                      )
+                    ) : (
+                      <td className="equalOpen">-</td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -112,7 +151,11 @@ class Portfolio extends React.Component {
           <div>
             <h4>Cash - {`$${(+this.props.cash * 100 / 100).toFixed(2)}`}</h4>
           </div>
-          <Time />
+          {this.state.marketOpen ? (
+            ''
+          ) : (
+            <h6 className="marketClosed">Market closed</h6>
+          )}
 
           <hr className="break" />
           <div>
